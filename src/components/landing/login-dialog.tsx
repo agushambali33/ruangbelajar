@@ -34,7 +34,7 @@ export function LoginDialog({
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Misal: Alya atau Adelia"
+          placeholder="Isi username kamu"
           disabled={loading}
           autoComplete="username"
         />
@@ -61,12 +61,12 @@ export function LoginDialog({
         onClick={() => onLogin(name, pin)}
         disabled={loading}
       >
-        {loading ? "Memeriksa..." : <>Masuk <ChevronRight size={17} /></>}
+        {loading ? "Tunggu ya ..." : <>Masuk <ChevronRight size={17} /></>}
       </button>
       <div className="mt-4 rounded-2xl bg-blush/70 px-3 py-3 text-[12px] leading-relaxed text-muted">
-        <b className="text-ink">Coba dulu:</b> Guru <b>Adelia</b> PIN <b>1234</b>
+        <b className="text-ink">Note :</b> Jika kamu lupa <b>Pin / Username </b>Hubungi <b>Kami</b>
         <br />
-        Murid <b>Alya</b> PIN <b>1111</b> · Salsa <b>3333</b> · Raka <b>4444</b>
+       
       </div>
       {!loading ? (
         <button type="button" className="mt-2 w-full py-3 text-sm text-[#9c7b77]" onClick={onClose}>
