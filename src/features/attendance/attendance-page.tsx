@@ -130,7 +130,7 @@ export function AttendancePage() {
         <div className="mb-3">
           <h2 className="text-base font-bold">Riwayat</h2>
           <span className="text-[12px] text-muted">
-            Catatan kehadiran terbaru, tampil sebagai kartu agar tidak melebar di ponsel.
+            Catatan kehadiran mu di sini.
           </span>
         </div>
 
