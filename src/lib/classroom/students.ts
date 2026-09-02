@@ -10,13 +10,12 @@ export function getLatestPaymentForStudent(
   payments: Payment[] | undefined,
   studentName: string,
 ) {
-  const key = String(studentName || "").trim().toLowerCase();
-
   const rows = (payments || []).filter(
     (p) =>
-      String(p.Student || "").trim().toLowerCase() === key,
+      String(p.Student || "")
+        .trim()
+        .toLowerCase() === String(studentName || "").trim().toLowerCase(),
   );
-
   if (!rows.length) return null;
 
   return rows
@@ -28,15 +27,7 @@ export function getLatestPaymentForStudent(
     .sort((a, b) => {
       const da = new Date(a.dateValue).getTime();
       const db = new Date(b.dateValue).getTime();
-
-      if (
-        !Number.isNaN(da) &&
-        !Number.isNaN(db) &&
-        da !== db
-      ) {
-        return db - da;
-      }
-
+      if (!Number.isNaN(da) && !Number.isNaN(db) && da !== db) return db - da;
       return b.index - a.index;
     })[0]?.item ?? null;
 }
@@ -45,16 +36,8 @@ export function canStudentSubmitPackage(
   student: Pick<Student, "Name" | "Paket" | "StatusBayar">,
   payments: Payment[],
 ) {
-  const latest = getLatestPaymentForStudent(
-    payments,
-    student.Name,
-  );
-
-  const status = (
-    latest?.Status ||
-    student.StatusBayar ||
-    ""
-  ) as PaymentStatus | "";
+  const latest = getLatestPaymentForStudent(payments, student.Name);
+  const status = (latest?.Status || student.StatusBayar || "") as PaymentStatus | "";
 
   if (status === "Menunggu Persetujuan") {
     return {
@@ -72,10 +55,7 @@ export function canStudentSubmitPackage(
     };
   }
 
-  return {
-    ok: true,
-    reason: "",
-  };
+  return { ok: true, reason: "" };
 }
 
 export function enrichStudents(
@@ -83,53 +63,23 @@ export function enrichStudents(
   payments: Payment[],
 ): EnrichedStudent[] {
   return students
-    .filter(
-      (s) =>
-        String(s.Role || "").toLowerCase() !== "teacher",
-    )
+    .filter((s) => s.Role !== "teacher")
     .map((student) => {
-      const latest = getLatestPaymentForStudent(
-        payments,
-        student.Name,
-      );
-
-      const paket =
-        latest?.Paket ||
-        student.Paket ||
-        "";
-
-      const status = (
-        latest?.Status ||
-        student.StatusBayar ||
-        ""
-      ) as PaymentStatus | "";
-
+      const latest = getLatestPaymentForStudent(payments, student.Name);
+      const paket = latest?.Paket || student.Paket || "";
+      const status = (latest?.Status || student.StatusBayar || "") as
+        | PaymentStatus
+        | "";
       const gate = canStudentSubmitPackage(
-        {
-          ...student,
-          Paket: paket,
-          StatusBayar: status,
-        },
+        { ...student, Paket: paket, StatusBayar: status },
         payments,
       );
-
-      // Harga resmi selalu diambil dari packages.ts.
-      // Amount dari Google Sheet hanya dipakai jika
-      // paket tidak dikenali di daftar packages.
-      const officialPrice = getPackagePrice(paket);
-
-      const sheetAmount = Number(latest?.Amount) || 0;
-
-      const packageAmount =
-        officialPrice > 0
-          ? officialPrice
-          : sheetAmount;
 
       return {
         ...student,
         Paket: paket,
         StatusBayar: status,
-        PackageAmount: packageAmount,
+        PackageAmount: Number(latest?.Amount) || getPackagePrice(paket),
         PackageName: getPackageShortName(paket),
         canSubmitPackage: gate.ok,
         submitBlockReason: gate.reason,
@@ -141,14 +91,6 @@ export function findStudent(
   students: Student[],
   name: string,
 ) {
-  const key = String(name || "")
-    .trim()
-    .toLowerCase();
-
-  return students.find(
-    (s) =>
-      String(s.Name || "")
-        .trim()
-        .toLowerCase() === key,
-  );
+  const key = String(name || "").trim().toLowerCase();
+  return students.find((s) => s.Name.trim().toLowerCase() === key);
 }
