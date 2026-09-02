@@ -66,7 +66,7 @@ export function LandingPage({ onLogin }: { onLogin: () => void }) {
           </h1>
           <p className="mt-4 max-w-[500px] text-[15px] leading-8 text-[#786c69]">
             Ruang sederhana untuk absensi, materi, paket bimbel, dan kabar belajar.
-            Dibuat hangat untuk murid tercinta.
+            Dibuat hangat untuk guru dan murid.
           </p>
           <button type="button" className="btn btn-primary mt-6 px-5 py-3.5 text-sm" onClick={onLogin}>
             Masuk ke Ruang Belajar
@@ -88,7 +88,7 @@ export function LandingPage({ onLogin }: { onLogin: () => void }) {
       </div>
 
       <footer className="pb-10 text-center text-[12px] text-[#ad9c98]">
-        Dibuat dengan cinta oleh Adelia Ardabela 💕
+        Dibuat dengan cinta oleh Adelia Ardabela
       </footer>
     </div>
   );
